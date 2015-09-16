@@ -3,7 +3,7 @@
 
 window.EVENT_TIMER = (function () {
 
-    var initTimer = function (name, callback) {
+    var initTimer = function (timerName, callback) {
         if(!callback) { return false; }
 
         if(!EVENT_TIMER.timings) { // only create timings once
@@ -39,9 +39,9 @@ window.EVENT_TIMER = (function () {
             durationBucket = '?' + durationSeconds + 's';
         }
         return durationBucket;
-    }
+    };
 
-    var mark = function (eventName) {
+    var mark = function (eventName, callback) {
 
         if(EVENT_TIMER.timings) {
             if(!EVENT_TIMER.timings.triggered) {
@@ -56,6 +56,10 @@ window.EVENT_TIMER = (function () {
                 EVENT_TIMER.timings = {triggered:true, event:null, duration:null, durationMs:0, durationSeconds:''}; //clear values for subsequent events
             }
         }
+
+        if(typeof callback === 'function') {
+            callback(EVENT_TIMER.timings);
+        }
     };
 
     return {
@@ -66,7 +70,7 @@ window.EVENT_TIMER = (function () {
 })();
 
 //---------
-// USAGE:
+// Example Usage:
 //---------
 // setup timer
 //  EVENT_TIMER.init('timer_a', function (timings) {
@@ -75,7 +79,7 @@ window.EVENT_TIMER = (function () {
 //     // using DTM
 //      _satellite.track('direct_call_rule');
 //     // using GA
-//      ga('send', 'event', timings.timerName, timings.event, timings.duration);
+//      ga('send', 'event', timings.timerName, 'init', 'na');
 //  });
 
 // put this inside a custom event handler
