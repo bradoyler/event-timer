@@ -1,0 +1,15 @@
+{
+  "name": "event-timer",
+  "version": "0.1.0",
+  "description": "time events for real user monitoring in GA/DTM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "event",
+    "timer"
+  ],
+  "author": "Brad Oyler",
+  "license": "ISC"
+}
