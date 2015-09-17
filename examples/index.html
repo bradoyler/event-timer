@@ -3,34 +3,54 @@
 <head>
     <meta charset="utf-8">
     <title>event-timer v0.1</title>
-    <script src='https://cdn.rawgit.com/bradoyler/event-timer/0.1.0/index.js'></script>
+    <script src='../index.js'></script>
     <style>
         #output {
             background-color: #EEE;
             border: inset 2px #CCC;
         }
+        nav {
+            padding: 15px;
+        }
     </style>
 </head>
 <body>
 <h2>Event Timer output:</h2>
+<nav>
+    <button>
+        <a href="?test=10100">10s test</a>
+    </button>
+    <button>
+        <a href="?test=20100">20s test</a>
+    </button>
+    <button>
+        <a href="?test=30100">30s test</a>
+    </button>
+    <button>
+        <a href="?test=40100">40s test</a>
+    </button>
+</nav>
+
 <div id="output"><div>
 
 <script>
     var $output = document.getElementById('output');
+
+    var testTime = document.location.search.split('?test=').join('') || 2200;
+    console.log('### Q:', testTime);
     EVENT_TIMER.init('timer_a', function (timings) {
         $output.innerHTML = $output.innerHTML + '<div>## Timer Init: '+ JSON.stringify(timings) +'</div>';
-//     // using DTM
-//      _satellite.track('direct_call_rule');
-//     // using GA
-//      ga('send', 'event', timings.timerName, timings.event, timings.duration);
+      // GA example
+      // ga('send', 'event', timings.timerName, 'init', 'na');
     });
 
     // put this inside a custom event handler
     setTimeout(function(){
-        EVENT_TIMER.mark('video_start', function(timings){
+        EVENT_TIMER.mark('event_start', function(timings){
             $output.innerHTML = $output.innerHTML + '<div>## Timer Mark: '+ JSON.stringify(timings) +'</div>';
         });
-    }, 2200);
+    }, testTime);
+
 </script>
 </body>
 </html>

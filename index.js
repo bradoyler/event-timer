@@ -3,69 +3,66 @@
 
 window.EVENT_TIMER = (function () {
 
+    var timings = null;
+
     var initTimer = function (timerName, callback) {
         if(!callback) { return false; }
-
-        if(!EVENT_TIMER.timings) { // only create timings once
-            EVENT_TIMER.timings = { timerName: timerName, startTS: new Date().getTime(), event:'', duration:''};
-            callback(EVENT_TIMER.timings);
+        if(!timings) { // prevents timer from running multiple times
+            timings = { timerName: timerName, startTS: new Date().getTime(), event:'', duration:''};
+            return callback(timings);
         }
+        callback({timerName: timerName, event:'subsequent timer'});
     };
 
+    var timingBuckets = [
+        {name: '0-4s', from:0, to:5},
+        {name: '05-9s',from:5, to:10},
+        {name: '10-14s', from:10, to:15},
+        {name: '15-19s', from:15, to:20},
+        {name: '20-29s', from:20, to:30},
+        {name: '30-39s', from:30, to:40},
+        {name: '40s+', from:40, to:999999}
+    ];
+
     var getDurationBucket = function (durationSeconds) {
-        var durationBucket = '';
-        if (durationSeconds < 5) {
-            durationBucket = '0-4s';
-        }
-        else if (durationSeconds >= 5 && durationSeconds < 10) {
-            durationBucket = '05-9s';
-        }
-        else if (durationSeconds >= 10 && durationSeconds < 15) {
-            durationBucket = '10-14s';
-        }
-        else if (durationSeconds >= 15 && durationSeconds < 20) {
-            durationBucket = '15-19s';
-        }
-        else if (durationSeconds >= 20 && durationSeconds < 30) {
-            durationBucket = '20-29s';
-        }
-        else if (durationSeconds >= 30 && durationSeconds < 40) {
-            durationBucket = '30-39s';
-        }
-        else if (durationSeconds > 39) {
-            durationBucket = '40s+';
-        }
-        else {
-            durationBucket = '?' + durationSeconds + 's';
-        }
+
+        var durationBucket = '?' + durationSeconds + 's';
+        timingBuckets.forEach(function (item) {
+           if(durationSeconds >= item.from && durationSeconds < item.to) {
+               durationBucket = item.name;
+           }
+        });
+
         return durationBucket;
     };
 
     var mark = function (eventName, callback) {
 
-        if(EVENT_TIMER.timings) {
-            if(!EVENT_TIMER.timings.triggered) {
+        if(timings) {
+            if(!timings.triggered) {
 
-                EVENT_TIMER.timings.triggered = true;
-                EVENT_TIMER.timings.event = eventName;
-                EVENT_TIMER.timings.durationMs = new Date().getTime() - EVENT_TIMER.timings.startTS;
-                EVENT_TIMER.timings.durationSeconds = Math.round(EVENT_TIMER.timings.durationMs/1000);
-                EVENT_TIMER.timings.duration = getDurationBucket(EVENT_TIMER.timings.durationSeconds);
+                timings.triggered = true;
+                timings.event = eventName;
+                timings.durationMs = new Date().getTime() - timings.startTS;
+                timings.durationSeconds = Math.round(timings.durationMs/1000);
+                timings.duration = getDurationBucket(timings.durationSeconds);
             }
             else {
-                EVENT_TIMER.timings = {triggered:true, event:null, duration:null, durationMs:0, durationSeconds:''}; //clear values for subsequent events
+                timings = {triggered:true, event:null, duration:null, durationMs:0, durationSeconds:''}; //clear values for subsequent events
             }
         }
 
         if(typeof callback === 'function') {
-            callback(EVENT_TIMER.timings);
+            callback(timings);
         }
     };
 
     return {
-        // public methods
+        // public methods/props
         init: initTimer,
-        mark: mark
+        mark: mark,
+        buckets: timingBuckets,
+        timings:timings
     };
 })();
 
