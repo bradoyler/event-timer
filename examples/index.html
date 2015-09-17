@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>event-timer v0.1</title>
+    <script src='https://cdn.rawgit.com/bradoyler/event-timer/0.1.0/index.js'></script>
+    <style>
+        #output {
+            background-color: #EEE;
+            border: inset 2px #CCC;
+        }
+    </style>
+</head>
+<body>
+<h2>Event Timer output:</h2>
+<div id="output"><div>
+
+<script>
+    var $output = document.getElementById('output');
+    EVENT_TIMER.init('timer_a', function (timings) {
+        $output.innerHTML = $output.innerHTML + '<div>## Timer Init: '+ JSON.stringify(timings) +'</div>';
+//     // using DTM
+//      _satellite.track('direct_call_rule');
+//     // using GA
+//      ga('send', 'event', timings.timerName, timings.event, timings.duration);
+    });
+
+    // put this inside a custom event handler
+    setTimeout(function(){
+        EVENT_TIMER.mark('video_start', function(timings){
+            $output.innerHTML = $output.innerHTML + '<div>## Timer Mark: '+ JSON.stringify(timings) +'</div>';
+        });
+    }, 2200);
+</script>
+</body>
+</html>
