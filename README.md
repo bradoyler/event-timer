@@ -48,3 +48,10 @@ setTimeout(function(){
   triggered: true
 }
 ```
+
+## Run locally (mac)
+```sh
+python -m SimpleHTTPServer
+```
+
+Goto: `http://localhost:8000`

@@ -27,11 +27,13 @@ window.EVENT_TIMER = (function () {
     var getDurationBucket = function (durationSeconds) {
 
         var durationBucket = '?' + durationSeconds + 's';
-        timingBuckets.forEach(function (item) {
-           if(durationSeconds >= item.from && durationSeconds < item.to) {
-               durationBucket = item.name;
-           }
-        });
+
+        for (i = 0; i < timingBuckets.length; i++) {
+            if(durationSeconds >= timingBuckets[i].from && durationSeconds < timingBuckets[i].to) {
+                durationBucket = timingBuckets[i].name;
+                break;
+            }
+        }
 
         return durationBucket;
     };
